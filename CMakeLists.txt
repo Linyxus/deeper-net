@@ -3,5 +3,5 @@ project(deeper_net)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SOURCE_FILES main.cpp src/data_types/tensor.h src/data_types/array.h)
+set(SOURCE_FILES main.cpp src/data_types/tensor.h src/data_types/array.h src/data_types/tools.h)
 add_executable(deeper_net ${SOURCE_FILES})
