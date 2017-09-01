@@ -7,11 +7,15 @@
 
 #include "array.h"
 #include <iostream>
+#include <ctime>
 
 // ***** Defination *****
 
 template <typename T>
 std::ostream & operator<<(std::ostream & out, const array<T> &arr);
+
+template <typename R>
+void time_it(R r);
 
 // ***** Implementation *****
 
@@ -21,9 +25,20 @@ std::ostream & operator<<(std::ostream & out, const array<T> &arr)
     out << "[";
     for (int i = 0; i < arr.length(); i++) {
         out << " " << arr[i] << " ";
+        if (i % 5 == 0)
+            out << std::endl;
     }
     out << "]";
     return out;
+}
+
+template <typename R>
+void time_it(R r)
+{
+    std::clock_t t1 = std::clock();
+    r();
+    double dur = (std::clock() - t1) / (double)CLOCKS_PER_SEC;
+    std::cout << "Duration: " << dur << " s" << std::endl;
 }
 
 #endif //DEEPER_NET_TOOLS_H

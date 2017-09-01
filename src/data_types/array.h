@@ -31,7 +31,7 @@ private:
     int _length;
     block_header<T> *_tree;
     int *_fact;
-    long _max_length;
+    unsigned int _max_length;
 };
 
 template <typename T>

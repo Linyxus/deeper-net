@@ -1,11 +1,17 @@
 #include <iostream>
-#include "src/data_types/tools.h"
-#include "src/data_types/array.h"
-using namespace std;
+#include <array>
+#include <utility>
 
-int main() {
+void show(const std::initializer_list<int> &ini)
+{
+    for (auto x : ini) {
+        std::cout << x << std::endl;
+    }
+}
+
+int main()
+{
     std::cout << "Hello, World!" << std::endl;
-    array<int> a({1, 2, 3, 4, 5}, 3, 2);
-    cout << a << endl;
+    show({123,234});
     return 0;
 }
