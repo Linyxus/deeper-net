@@ -34,9 +34,9 @@ template <typename T, unsigned int N>
 class tensor
 {
 public:
-    explicit tensor(typename initlist_dim<T, N>::type data, std::initializer_list<int> size);
-    tensor(std::initializer_list<int> size, const T& def);
-    tensor(std::initializer_list<int> size);
+    explicit tensor(typename initlist_dim<T, N>::type data, std::array<int, N> size);
+    tensor(std::array<int, N> size, const T& def);
+    tensor(std::array<int, N> size);
     int to_index(const std::array<int, N> &crd) const;
     void init(const std::array<int, N> &size);
 private:
@@ -46,14 +46,14 @@ private:
 };
 
 template <typename T, unsigned int N>
-tensor<T, N>::tensor(typename initlist_dim<T, N>::type data, std::initializer_list<int> size)
+tensor<T, N>::tensor(typename initlist_dim<T, N>::type data, std::array<int, N> size)
         : tensor(size)
 {
 
 }
 
 template <typename T, unsigned int N>
-tensor<T, N>::tensor(std::initializer_list<int> size, const T& def)
+tensor<T, N>::tensor(std::array<int, N> size, const T& def)
     : tensor(size)
 {
     for (auto & x : this->_data) {
@@ -62,7 +62,7 @@ tensor<T, N>::tensor(std::initializer_list<int> size, const T& def)
 }
 
 template <typename T, unsigned int N>
-tensor<T, N>::tensor(std::initializer_list<int> size)
+tensor<T, N>::tensor(std::array<int, N> size)
 {
     for (auto iter = size.begin(); iter != size.end(); iter++) {
         unsigned long i = iter - size.begin();

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <array>
-#include <utility>
+#include "gtest/gtest.h"
 
 void show(const std::initializer_list<int> &ini)
 {
@@ -9,9 +9,15 @@ void show(const std::initializer_list<int> &ini)
     }
 }
 
-int main()
+namespace
 {
-    std::cout << "Hello, World!" << std::endl;
-    show({123,234});
-    return 0;
+    TEST(SHOW, SHOW_ARRAY) {
+        show({1,2,3});
+    }
+}
+
+int main(int argc, char **argv)
+{
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
