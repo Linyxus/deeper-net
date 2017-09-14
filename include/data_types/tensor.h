@@ -10,33 +10,31 @@
 #include <array>
 
 template <typename T, unsigned int N> class tensor;
-template <typename T, unsigned int N> struct initlist_dim;
-
-
+template <typename T, unsigned int N> struct vector_dim;
+template <typename T, unsigned int N> struct vec_flater;
 
 template <typename T>
-struct initlist_dim<T, 0>
+struct vector_dim<T, 0>
 {
     typedef T type;
 };
 
 template <typename T, unsigned int N>
-struct initlist_dim
+struct vector_dim
 {
-    typedef std::initializer_list<typename initlist_dim<T, N-1>::type> type;
+    typedef std::vector<typename vector_dim<T, N-1>::type> type;
 };
 
-template <typename T, unsigned int N>
-std::vector<typename initlist_dim<T, N-1>::type> &&flatten_initlist(const typename initlist_dim<T, N>::type &ini);
-template <typename T> std::vector<T> &&flatten_initlist<T, 1>(const std::initializer_list<T> &ini);
+template<typename T, unsigned int N>
+std::vector<T> flatten_vec(typename vector_dim<T, N>::type);
 
 template <typename T, unsigned int N>
 class tensor
 {
 public:
-    explicit tensor(typename initlist_dim<T, N>::type data, std::array<int, N> size);
+    explicit tensor(typename vector_dim<T, N>::type data, std::array<int, N> size);
     tensor(std::array<int, N> size, const T& def);
-    tensor(std::array<int, N> size);
+    explicit tensor(std::array<int, N> size);
     int to_index(const std::array<int, N> &crd) const;
     void init(const std::array<int, N> &size);
 private:
@@ -46,10 +44,10 @@ private:
 };
 
 template <typename T, unsigned int N>
-tensor<T, N>::tensor(typename initlist_dim<T, N>::type data, std::array<int, N> size)
+tensor<T, N>::tensor(typename vector_dim<T, N>::type data, std::array<int, N> size)
         : tensor(size)
 {
-
+    this->_data = vec_flater<T, N>::flatten(data);
 }
 
 template <typename T, unsigned int N>
@@ -75,7 +73,7 @@ tensor<T, N>::tensor(std::array<int, N> size)
 }
 
 template <typename T, unsigned int N>
-void tensor::init(const std::array<int, N> &sizes)
+void tensor<T, N>::init(const std::array<int, N> &sizes)
 {
     int fact = 1;
     for (int i = N-1; i >= 0; i--) {
@@ -94,5 +92,30 @@ int tensor<T, N>::to_index(const std::array<int, N> &crd) const
     }
     return ret;
 }
+
+template <typename T>
+struct vec_flater<T, 1>
+{
+    typedef std::vector<T> input_type;
+    typedef std::vector<T> output_type;
+    static output_type flatten(input_type arr) {
+        return arr;
+    }
+};
+
+template <typename T, unsigned int N>
+struct vec_flater
+{
+    typedef typename vector_dim<T, N>::type input_type;
+    typedef std::vector<T> output_type;
+    static output_type flatten(input_type arr) {
+        std::vector<T> ret;
+        for (auto a : arr) {
+            std::vector<T> res = vec_flater<T, N-1>::flatten(a);
+            ret.insert(ret.end(), res.begin(), res.end());
+        }
+        return ret;
+    }
+};
 
 #endif //DEEPER_NET_TENSOR_H
