@@ -68,7 +68,7 @@ namespace
     }
 
     TEST(TENSOR, INDEXING) {
-        tensor<int, 3> ts({3,4,5}, 0);
+        tensor<int, 3> ts(0, {3,4,5});
         EXPECT_EQ((ts[{1,2,3}]), 0);
         EXPECT_EQ((ts[{2,3,4}]), 0);
         ts[{1,2,3}] = 1;

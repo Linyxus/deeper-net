@@ -23,6 +23,9 @@ namespace dnet
         template <typename T, unsigned int N>
         struct vec_flater;
 
+        template <typename T, unsigned int N>
+        struct index_return;
+
         template <typename T>
         struct vector_dim<T, 0>
         {
@@ -35,14 +38,27 @@ namespace dnet
             typedef std::vector<typename vector_dim<T, N - 1>::type> type;
         };
 
+        template <typename T>
+        struct index_return<T, 1>
+        {
+            typedef T type;
+        };
+
+        template <typename T, unsigned int N>
+        struct index_return
+        {
+            typedef tensor<T, N-1> type;
+        };
+
         template <typename T, unsigned int N>
         class tensor
         {
         public:
             typedef std::array<index_type, N> axes_type;
+
             explicit tensor(typename vector_dim<T, N>::type data, std::array<index_type, N> size);
 
-            tensor(std::array<index_type, N> size, const T &def);
+            tensor(const T &def, std::array<index_type, N> size);
 
             explicit tensor(std::array<index_type, N> size);
 
@@ -54,12 +70,7 @@ namespace dnet
             int to_index(const std::array<index_type, N> &crd) const;
 
             const T &operator[](const std::array<index_type, N> &i) const;
-
             T &operator[](const std::array<index_type, N> &i);
-
-            const T &operator[](index_type i) const;
-
-            T &operator[](index_type i);
 
             const axes_type &facts() const;
 
@@ -83,7 +94,7 @@ namespace dnet
         }
 
         template <typename T, unsigned int N>
-        tensor<T, N>::tensor(std::array<index_type, N> size, const T &def)
+        tensor<T, N>::tensor(const T &def, std::array<index_type, N> size)
                 : tensor(size)
         {
             for (auto &x : this->_data) {
@@ -147,25 +158,13 @@ namespace dnet
         }
 
         template <typename T, unsigned int N>
-        const T& tensor<T, N>::operator[](index_type i) const
-        {
-            return this->_data[i];
-        }
-
-        template <typename T, unsigned int N>
-        T& tensor<T, N>::operator[](index_type i)
-        {
-            return this->_data[i];
-        }
-
-        template <typename T, unsigned int N>
-        const typename tensor<T, N>::axes_type& tensor<T, N>::facts() const
+        const typename tensor<T, N>::axes_type &tensor<T, N>::facts() const
         {
             return this->_facts;
         }
 
         template <typename T, unsigned int N>
-        const typename tensor<T, N>::axes_type& tensor<T, N>::shape() const
+        const typename tensor<T, N>::axes_type &tensor<T, N>::shape() const
         {
             return this->_shape;
         }
