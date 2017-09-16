@@ -6,6 +6,7 @@
 #define DEEPER_NET_TOOLS_H
 
 #include "array.h"
+#include "tensor.h"
 #include <iostream>
 #include <ctime>
 
@@ -13,6 +14,9 @@
 
 template <typename T>
 std::ostream & operator<<(std::ostream & out, const array<T> &arr);
+
+template <typename T, unsigned int N>
+std::ostream & operator<<(std::ostream & out, const dnet::data_types::tensor<T, N> &ts);
 
 template <typename R>
 void time_it(R r);
@@ -32,13 +36,24 @@ std::ostream & operator<<(std::ostream & out, const array<T> &arr)
     return out;
 }
 
-template <typename R>
-void time_it(R r)
+template<typename T, unsigned int N>
+std::ostream &operator<<(std::ostream &out, const dnet::data_types::tensor<T, N> &ts)
 {
-    std::clock_t t1 = std::clock();
-    r();
-    double dur = (std::clock() - t1) / (double)CLOCKS_PER_SEC;
-    std::cout << "Duration: " << dur << " s" << std::endl;
+
+}
+
+namespace dnet {
+    namespace tools
+    {
+        template<typename R>
+        void time_it(R r)
+        {
+            std::clock_t t1 = std::clock();
+            r();
+            double dur = (std::clock() - t1) / (double) CLOCKS_PER_SEC;
+            std::cout << "Duration: " << dur << " s" << std::endl;
+        }
+    }
 }
 
 #endif //DEEPER_NET_TOOLS_H
