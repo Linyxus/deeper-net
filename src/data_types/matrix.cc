@@ -30,14 +30,12 @@ namespace dnet
                                        + std::to_string(right.row()) + ", "
                                        + std::to_string(right.col()) + ").");
             }
-            matrix ret({this->row(), right.col()});
+            matrix ret(0.0, {this->row(), right.col()});
             index_type l = this->col(); // == right.row()
-            for (index_type i = 0; i < this->row(); i++) {
-                for (index_type j = 0; j < right.col(); j++) {
-                    double s = 0;
-                    for (index_type m = 0; m < l; m++)
-                        s += (*this)[{i, m}] * right[{m, j}];
-                    ret[{i, j}] = s;
+            for (index_type i = 0; i < ret.row(); i++) {
+                for (index_type m = 0; m < l; m++) {
+                    for (index_type j = 0; j < ret.col(); j++)
+                        ret[{i, j}] += (*this)[{i, m}] * right[{m, j}];
                 }
             }
             return ret;
