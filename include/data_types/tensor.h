@@ -76,6 +76,8 @@ namespace dnet
 
             const axes_type &shape() const;
 
+            std::vector<T &> &__raw();
+
             void swap_axis(index_type i1, index_type i2);
         private:
             void init(const std::array<index_type, N> &sizes);
@@ -137,6 +139,12 @@ namespace dnet
                 ret += crd[i] * this->_facts[i];
             }
             return ret;
+        }
+
+        template <typename T, unsigned int N>
+        std::vector<T &>& tensor<T, N>::__raw()
+        {
+            return this->_data;
         }
 
         template <typename T, unsigned  int N>
