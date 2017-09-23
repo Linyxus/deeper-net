@@ -26,7 +26,9 @@ namespace dnet
         // define variant of function
         struct variant;
 
-        // const value: constant<0.0>
+        // const value
+        // MAKE_VALUE({double_value}, {name})
+        // then: constant<{name}> will create a constant holder containing {double_value}
         template <typename T>
         struct constant;
 

@@ -5,7 +5,7 @@
 #ifndef DEEPER_NET_RELU_H
 #define DEEPER_NET_RELU_H
 
-#include "operator.h"
+#include "activation.h"
 #include "../../misc/exception.h"
 #include <algorithm>
 
@@ -15,7 +15,7 @@ namespace dnet
     {
         class relu;
 
-        class relu : public op
+        class relu : public activation
         {
         public:
             static unsigned int cnt;

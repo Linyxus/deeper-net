@@ -20,7 +20,7 @@ namespace dnet
 
         struct dotgrad_ret_type;
         /**
-         * calculate grad of W and x due to grad of their dot product y
+         * calculate grad of W and x based on grad of their dot product y
          * >>> x and grad_y are vectors whose col equals ONE <<<
          * @param W matrix W is transposed, which means it has the same row as len(x) and the same column
          * as len(y)

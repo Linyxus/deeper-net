@@ -10,7 +10,7 @@ namespace dnet
     {
 
         relu::relu(const tensor<double, 2>::axes_type &input_shape)
-            : _prev_x(input_shape)
+            : _prev_x(input_shape), activation(input_shape)
         {
             this->input_shape = input_shape;
             this->output_shape = input_shape;
