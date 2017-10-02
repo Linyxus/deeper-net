@@ -7,6 +7,7 @@
 
 #include "activation.h"
 #include "../../misc/exception.h"
+#include "../../misc/random.h"
 #include <algorithm>
 
 namespace dnet
@@ -18,16 +19,15 @@ namespace dnet
         class relu : public activation
         {
         public:
-            static unsigned int cnt;
             explicit relu(const matrix::axes_type &input_shape = matrix::axes_type({0, 0}));
+            ~relu() {}
 
-            virtual const matrix &forwardp(const matrix &input) override;
-            virtual const matrix &backp(const matrix &y_grad) override;
+            virtual matrix forwardp(const matrix &input) override;
+            virtual backp_grads_type backp(const matrix &y_grad) override;
+            virtual params_type params() override;
         private:
             matrix _prev_x;
         };
-
-        unsigned int relu::cnt = 0;
     }
 }
 

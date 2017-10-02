@@ -14,11 +14,13 @@ namespace dnet
     {
         using namespace data_types;
 
-        typedef std::vector<double &> params_type;
+        typedef std::vector<double *> params_type;
 
         class op;
 
         struct dotgrad_ret_type;
+        struct backp_grads_type;
+
         /**
          * calculate grad of W and x based on grad of their dot product y
          * >>> x and grad_y are vectors whose col equals ONE <<<
@@ -36,6 +38,12 @@ namespace dnet
             matrix grad_x;
         };
 
+        struct backp_grads_type
+        {
+            matrix input;
+            params_type params;
+        };
+
         class op
         {
         public:
@@ -44,10 +52,25 @@ namespace dnet
             matrix::axes_type input_shape;
             matrix::axes_type output_shape;
 
-            virtual const matrix &forwardp(const matrix &input) = 0;
-            virtual const matrix &backp(const matrix &y_grad) = 0;
+            /**
+             * forwordprog period of node, calculate outputs and store the input for further calculation.
+             * @param input input values
+             * @return output values
+             */
+            virtual matrix forwardp(const matrix &input) = 0;
 
-            virtual params_type &params() = 0;
+            /**
+             * backprog period of node, calculate gradients of input and params.
+             * @param y_grad the gradients of output
+             * @return a structure consisting of gradients of input and parameters
+             */
+            virtual backp_grads_type backp(const matrix &y_grad) = 0;
+
+            /**
+             * return params of this node for optimization.
+             * @return pointers of params for easy modification
+             */
+            virtual params_type params() = 0;
 
             std::string id;
         };

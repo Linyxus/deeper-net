@@ -8,6 +8,7 @@
 #include <utility>
 #include <vector>
 #include <array>
+#include "../misc/exception.h"
 
 namespace dnet
 {
@@ -62,12 +63,14 @@ namespace dnet
 
             explicit tensor(std::array<index_type, N> size);
 
-            tensor(const tensor<T, N> &) = default;
+            tensor(const tensor<T, N> &);
             tensor(tensor<T, N> &&) noexcept = default;
-            tensor<T, N> &operator=(const tensor<T, N> &) = default;
+            tensor<T, N> &operator=(const tensor<T, N> &);
             tensor<T, N> &operator=(tensor<T, N> &&) noexcept = default;
 
             int to_index(const std::array<index_type, N> &crd) const;
+
+            bool check(const axes_type &ax) const;
 
             const T &operator[](const std::array<index_type, N> &i) const;
             T &operator[](const std::array<index_type, N> &i);
@@ -118,6 +121,12 @@ namespace dnet
         }
 
         template <typename T, unsigned int N>
+        tensor<T, N>::tensor(const tensor<T, N> &src) = default;
+
+        template <typename T, unsigned int N>
+        tensor<T, N>& tensor<T, N>::operator=(const tensor<T, N> &src) = default;
+
+        template <typename T, unsigned int N>
         void tensor<T, N>::init(const std::array<index_type, N> &sizes)
         {
             for (index_type i = 0; i < this->_axes_sort.size(); i++) {
@@ -147,12 +156,24 @@ namespace dnet
             return this->_data;
         }
 
+        template <typename T, unsigned int N>
+        bool tensor<T, N>::check(const tensor<T, N>::axes_type &ax) const
+        {
+            for (int i = 0; i < N; i++)
+                if (ax[i] >= this->shape()[i])
+                    return false;
+            return true;
+        };
+
         template <typename T, unsigned  int N>
         const T &tensor<T, N>::operator[](const std::array<index_type, N> &i) const
         {
             axes_type ii;
             for (size_t t = 0; t < i.size(); t++)
                 ii[this->_axes_sort[t]] = i[t];
+            if (!this->check(ii)) {
+                throw misc::make_error("matrix", "Index out of range.");
+            }
             return this->_data[this->to_index(ii)];
         }
 
@@ -162,6 +183,9 @@ namespace dnet
             axes_type ii;
             for (size_t t = 0; t < i.size(); t++)
                 ii[this->_axes_sort[t]] = i[t];
+            if (!this->check(ii)) {
+                throw misc::make_error("matrix", "Index out of range.");
+            }
             return this->_data[this->to_index(ii)];
         }
 
@@ -180,6 +204,9 @@ namespace dnet
         template <typename T, unsigned int N>
         void tensor<T, N>::swap_axis(index_type i1, index_type i2)
         {
+            if (i1 >= N || i2 >= N) {
+                throw misc::make_error("matrix", "Index out of range.");
+            }
             index_type t = this->_axes_sort[i1];
             this->_axes_sort[i1] = this->_axes_sort[i2];
             this->_axes_sort[i2] = t;
