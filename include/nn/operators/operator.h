@@ -30,7 +30,7 @@ namespace dnet
          * @param grad_y grad of output vector y
          * @return contains two value: grad of W and grad of x
          */
-        const dotgrad_ret_type &cal_dot_grad(const matrix &W, const matrix &x, const matrix &grad_y);
+        dotgrad_ret_type cal_dot_grad(const matrix &W, const matrix &x, const matrix &grad_y);
 
         struct dotgrad_ret_type
         {
@@ -72,6 +72,7 @@ namespace dnet
              */
             virtual params_type params() = 0;
 
+            // identity of this unit, for displaying structure
             std::string id;
         };
     }

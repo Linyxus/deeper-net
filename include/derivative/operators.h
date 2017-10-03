@@ -57,6 +57,14 @@ namespace dnet
         template <typename R>
         struct op_ln;
 
+        // max{L, R}
+        template <typename L, typename R>
+        struct op_max;
+
+        // min{L, R}
+        template <typename L, typename R>
+        struct op_min;
+
         // macro
         #define MAKE_VALUE(V, NAME) struct NAME { static double value() { return V; } };
 
@@ -193,6 +201,44 @@ namespace dnet
             static double d(double v)
             {
                 return __base::d(v);
+            }
+        };
+
+        template <typename L, typename R>
+        struct op_max
+        {
+            static double f(double v)
+            {
+                return std::max(L::f(v), R::f(v));
+            }
+
+            static double d(double v)
+            {
+                if (L::f(v) >= R::f(v)) {
+                    return L::d(v);
+                }
+                else {
+                    return R::d(v);
+                }
+            }
+        };
+
+        template <typename L, typename R>
+        struct op_min
+        {
+            static double f(double v)
+            {
+                return std::min(L::f(v), R::f(v));
+            }
+
+            static double d(double v)
+            {
+                if (L::f(v) <= R::f(v)) {
+                    return L::d(v);
+                }
+                else {
+                    return R::d(v);
+                }
             }
         };
     }

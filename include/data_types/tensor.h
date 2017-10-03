@@ -75,6 +75,8 @@ namespace dnet
             const T &operator[](const std::array<index_type, N> &i) const;
             T &operator[](const std::array<index_type, N> &i);
 
+            bool operator==(const tensor<T, N> &rhs) const;
+
             const axes_type &facts() const;
 
             const axes_type &shape() const;
@@ -171,7 +173,7 @@ namespace dnet
             axes_type ii;
             for (size_t t = 0; t < i.size(); t++)
                 ii[this->_axes_sort[t]] = i[t];
-            if (!this->check(ii)) {
+            if (!this->check(i)) {
                 throw misc::make_error("matrix", "Index out of range.");
             }
             return this->_data[this->to_index(ii)];
@@ -183,10 +185,18 @@ namespace dnet
             axes_type ii;
             for (size_t t = 0; t < i.size(); t++)
                 ii[this->_axes_sort[t]] = i[t];
-            if (!this->check(ii)) {
+            if (!this->check(i)) {
                 throw misc::make_error("matrix", "Index out of range.");
             }
             return this->_data[this->to_index(ii)];
+        }
+
+        template <typename T, unsigned int N>
+        bool tensor<T, N>::operator==(const tensor<T, N> &rhs) const
+        {
+            return this->_data == rhs._data
+                   && this->shape() == rhs.shape()
+                   && this->_axes_sort == rhs._axes_sort;
         }
 
         template <typename T, unsigned int N>
@@ -207,9 +217,15 @@ namespace dnet
             if (i1 >= N || i2 >= N) {
                 throw misc::make_error("matrix", "Index out of range.");
             }
+            //swap map array
             index_type t = this->_axes_sort[i1];
             this->_axes_sort[i1] = this->_axes_sort[i2];
             this->_axes_sort[i2] = t;
+
+            //swap size on each axis
+            t = this->_shape[i1];
+            this->_shape[i1] = this->_shape[i2];
+            this->_shape[i2] = t;
         }
 
         template <typename T>

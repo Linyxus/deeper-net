@@ -6,6 +6,7 @@
 #define DEEPER_NET_DENSE_H
 
 #include "operator.h"
+#include "relu.h"
 
 namespace dnet
 {

@@ -4,6 +4,7 @@
 
 #include "../../include/data_types/tensor.h"
 #include "../../include/data_types/tools.h"
+#include "../../include/misc/exception.h"
 #include "../../gtest/include/gtest/gtest.h"
 
 namespace
@@ -95,24 +96,29 @@ namespace
     }
 
     TEST(TENSOR, SWAP_AXIS) {
-        tensor<int, 3> ts({
-                                  {
-                                          {1,2,3,4},
-                                          {5,6,7,8},
-                                          {9,10,11,12}
-                                  },
-                                  {
-                                          {1,2,3,4},
-                                          {5,6,7,8},
-                                          {9,10,11,12}
-                                  }
-                          }, {2,3,4});
-        EXPECT_EQ((ts[{1,1,2}]), 7);
-        ts.swap_axis(1, 2);
-        EXPECT_EQ((ts[{1,2,1}]), 7);
-        ts.swap_axis(0, 1);
-        EXPECT_EQ((ts[{2,1,1}]), 7);
-        EXPECT_EQ((ts[{3,0,1}]), 8);
+        try {
+            tensor<int, 3> ts({
+                                      {
+                                              {1, 2, 3, 4},
+                                              {5, 6, 7, 8},
+                                              {9, 10, 11, 12}
+                                      },
+                                      {
+                                              {1, 2, 3, 4},
+                                              {5, 6, 7, 8},
+                                              {9, 10, 11, 12}
+                                      }
+                              }, {2, 3, 4});
+            EXPECT_EQ((ts[{1, 1, 2}]), 7);
+            ts.swap_axis(1, 2);
+            EXPECT_EQ((ts[{1, 2, 1}]), 7);
+            ts.swap_axis(0, 1);
+            EXPECT_EQ((ts[{2, 1, 1}]), 7);
+            EXPECT_EQ((ts[{3, 0, 1}]), 8);
+        }
+        catch (const dnet::misc::exception &e) {
+            std::cout << e << std::endl;
+        }
     }
 }
 
